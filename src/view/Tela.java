@@ -1,4 +1,4 @@
-package controlador;
+package view;
 
 import java.io.IOException;
 import java.util.Scanner;
