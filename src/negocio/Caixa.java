@@ -21,8 +21,26 @@ public class Caixa {
 		opEsp = new OperacoesEspecificas();
 	}
 	
-	public void aguardaCartao(){
-		cartao.setId(opEsp.aguardaCartao());
+	public String aguardaCartao(int opcao){
+		boolean testeAutenticado  = false;
+		String retorno = "";
+		opEsp.aguardaCartao(); //aguardando qualquer cartao
+		
+		if(opcao == 3) //inicializacao
+			testeAutenticado = opEsp.testeAutenticacaoNaoInicializado();
+		else
+			testeAutenticado = opEsp.testeAutenticacaoInicializado();
+		
+		if (testeAutenticado) {
+			cartao.setId(opEsp.aguardaCartao());
+			retorno = "";
+		}
+		else {
+			cartao.setId(0);
+			retorno = "Cartão inválido!";
+		}
+		
+		return retorno;			
 	}
 	
 	public float leSaldo(){

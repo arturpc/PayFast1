@@ -67,4 +67,18 @@ public class OperacoesEspecificas {
 	    }
 	    return hexBuilder.toString(); 
 	}
+
+	public boolean testeAutenticacaoNaoInicializado() {
+		byte[] bchave = new byte[]{
+				(byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF //CHAVE				
+				};  
+		return opBas.autentica(bchave);
+	}
+
+	public boolean testeAutenticacaoInicializado() {
+		byte[] bchave = new byte[]{
+				(byte) 0xFA, (byte) 0x08, (byte) 0x11, (byte) 0x85, (byte) 0xCA, (byte) 0xB0 //CHAVE
+				}; 
+		return opBas.autentica(bchave);
+	}
 }

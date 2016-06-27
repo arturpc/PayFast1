@@ -31,6 +31,7 @@ public class Tela {
 		String tela = "\t\t\t\t\t" + TITULO + "\n\n\n";
 		tela += " 1 - Deposito\n";
 		tela += " 2 - Comprar\n";
+		tela += " 3 - Inicializar\n";
 		tela += "-1 - Sair\n\n\n";
 		tela += "opcao: ";
 		System.out.println(tela);
@@ -42,7 +43,7 @@ public class Tela {
 			telaAguardandoCartao(opcao);
 		else
 			//-->senao terminar programa
-			System.exit(0);
+			System.exit(0);		
 	}
 	
 	//Monta a tela de deposito e apresenta ao usuario
@@ -99,22 +100,39 @@ public class Tela {
 	//Monta a tela de aguardando cartao e apresenta ao usuario. Ela sempre eh chamada
 	//antes de mostrar as telas de compra ou deposito 
 	public void telaAguardandoCartao(int opcao) throws IOException, InterruptedException{
+		String retorno = "";
+
 		//fica aguardando o cartao interagir com leitora
 		new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
 		String tela = "\t\t\t\t\t" + TITULO + "\n\n\n";
 		tela += "Aguardando cartao...";
 		System.out.println(tela);
+			
+		retorno = cx.aguardaCartao(opcao);
 		
-		cx.aguardaCartao();
-		//e então passa para a tela de destino
-		if (opcao == 1) 
-			telaDeposito();
-		else if(opcao == 2)
-			telaCompra();
-		else
-			throw new InvalidActivityException(); //opcao nao prevista
+		if (retorno.equals("")) {			
+			//e então passa para a tela de destino
+			if (opcao == 1) 
+				telaDeposito();
+			else if(opcao == 2)
+				telaCompra();
+			else if(opcao == 3)
+				telaInicializar();
+			else
+				throw new InvalidActivityException(); //opcao nao prevista
+		}
+		else {
+			System.out.println(retorno);
+			new ProcessBuilder("cmd", "/c", "pause").inheritIO().start().waitFor();
+			telaMenu();
+		}
 	}
 	
+	private void telaInicializar() {
+		//TODO TELA DE INICIALIZAÇÃO
+		System.out.println("TODO LIST");		
+	}
+
 	public static void main(String[] args) throws IOException, InterruptedException {
 		//execução do programa
 		//instancia Tela chamando mostraTela
