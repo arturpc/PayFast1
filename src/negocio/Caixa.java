@@ -1,5 +1,7 @@
 package negocio;
 
+import java.io.IOException;
+
 import javax.activity.InvalidActivityException;
 
 import cartao.OperacoesEspecificas;
@@ -48,14 +50,14 @@ public class Caixa {
 		return opEsp.leSaldo();
 	}
 	
-	public void depositaCartao(float saldo, int valor2){
+	public void depositaCartao(float saldo, int valor2) throws IOException{
 		//faz as operacoes e regras de deposito
 		cartao.setSaldo(saldo + valor2);
 		//chama a função de gravarSaldo
 		opEsp.gravaSaldo(cartao.getSaldo());
 	}
 
-	public String debitaCartao(float saldo, float valor2){
+	public String debitaCartao(float saldo, float valor2) throws IOException{
 		//faz as operacoes e regras de debito
 		if (valor2 > saldo)
 			return "Saldo insuficiênte"; //Saldo insuficênte
@@ -73,5 +75,9 @@ public class Caixa {
 
 	public void setCartao(Cartao cartao) {
 		this.cartao = cartao;
+	}
+
+	public void inicializarCartao() throws IOException {
+		opEsp.inicializaCartao();
 	}
 }

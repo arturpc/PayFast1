@@ -128,9 +128,33 @@ public class Tela {
 		}
 	}
 	
-	private void telaInicializar() {
+	private void telaInicializar() throws InterruptedException, IOException {
 		//TODO TELA DE INICIALIZAÇÃO
-		System.out.println("TODO LIST");		
+		cx.inicializarCartao();		
+		MensagemAguarde();		
+		MensagemSucesso();
+		telaMenu();
+	}
+
+	private void MensagemAguarde() throws InterruptedException, IOException {
+		new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+		String tela = "\t\t\t\t\t" + TITULO + "\n\n\n";
+		tela += "Gravando cartao, AGUARDE";
+		System.out.printf(tela);
+		//efeito de tela
+		for (int i = 0; i < 3; i++) {
+			Thread.sleep(500);
+			System.out.printf(".");
+		}
+	}
+
+	private void MensagemSucesso() throws InterruptedException, IOException {
+		String tela;
+		new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+		tela = "\t\t\t\t\t" + TITULO + "\n\n\n";
+		tela += "Cartao gravado com sucesso!";
+		System.out.println(tela);
+		new ProcessBuilder("cmd", "/c", "pause").inheritIO().start().waitFor();
 	}
 
 	public static void main(String[] args) throws IOException, InterruptedException {

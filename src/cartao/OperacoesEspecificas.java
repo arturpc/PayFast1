@@ -1,5 +1,7 @@
 package cartao;
 
+import java.io.IOException;
+
 public class OperacoesEspecificas {
 	//variavel de operacoes basicas
 	  //converção para hexa
@@ -31,13 +33,13 @@ public class OperacoesEspecificas {
 			return Long.valueOf(r.substring(0,15).replace(" ","").trim(),16);
 	}	
 	
-	public void gravaSaldo(float saldo){
+	public void gravaSaldo(double d) throws IOException{
 		//autentica setor
 		//autentica no setor 10
 		int bloco = 36;
 		opBas.autenticaCartao(bloco);
 		//passa o endereco da gravaçao do saldo chamando a funcao basica de leitura
-		 float f = saldo;
+		 double f = d;
 		 int i = (int) f;
 	     int dec = i;
 	     String hex = decToHex(dec);
@@ -48,13 +50,12 @@ public class OperacoesEspecificas {
 	    		bData[j] = Integer.valueOf(temp, 16).byteValue();
 	     }
 	     
-		opBas.gravaCartao(bloco,bData);
+		opBas.gravaCartao(bloco,bData,0, true);
 	}
 
 	public long aguardaCartao() {
 		return opBas.aguardaCartao();
 	}	
-	
 	
 	public static String decToHex(int dec) {
 	    StringBuilder hexBuilder = new StringBuilder(sizeOfIntInHalfBytes);
@@ -80,5 +81,21 @@ public class OperacoesEspecificas {
 				(byte) 0xFA, (byte) 0x08, (byte) 0x11, (byte) 0x85, (byte) 0xCA, (byte) 0xB0 //CHAVE
 				}; 
 		return opBas.autentica(bchave);
+	}
+
+	public void inicializaCartao() throws IOException {
+		//troca chave de segurança
+		int bloco = 39;
+		opBas.autenticaCartao(bloco);
+		//passa o endereco da gravaçao do saldo chamando a funcao basica de leitura
+		
+		gravaSaldo(0);
+		
+		byte[] bData = new byte[]{
+				(byte) 0xFA, (byte) 0x08, (byte) 0x11, (byte) 0x85, (byte) 0xCA, (byte) 0xB0, //CHAVE
+				(byte) 0xFF, (byte) 0x07, (byte) 0x80, (byte) 0x69, //PADRÃO				
+				(byte) 0xFA, (byte) 0x08, (byte) 0x11, (byte) 0x85, (byte) 0xCA, (byte) 0xB0, //CHAVE
+				};
+		opBas.gravaCartao(bloco,bData, 0, false); //mudar a função de gravar cartão para ser passado o index de inicio da gravação no bloco
 	}
 }

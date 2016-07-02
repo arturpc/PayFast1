@@ -67,7 +67,7 @@ public class OperacaoBasica {
 		return getId();
 	}
 	
-	public void autenticaCartao(int bloco){
+	public String autenticaCartao(int bloco){
 		//autentica o cartao conforme parametros
 		byte[] bAute;
 
@@ -79,6 +79,7 @@ public class OperacaoBasica {
 		if (!retorno.equals("90 00 ")) {
 			System.out.println("Erro de autenticacao!");
 		}
+		return retorno;
 	}
 	
 	public String leCartao(int bloco){
@@ -93,27 +94,37 @@ public class OperacaoBasica {
 		return retorno;
 	}
 	
-	public void gravaCartao(int bloco, byte[] bData){
+	public void gravaCartao(int bloco, byte[] bData, int indexByte, boolean crypt) throws IOException{
 		//grava cartao conforme parametros
-		byte[] bGrava;
+		byte[] bDados = new byte[16];
 		
-		try {
-			bData = Enigma.criptografa(bData);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		for (int i = 0; i < 16; i++) {
+			bDados[i] = (byte) 0xFF;
+		}	
+		
+		if (crypt)
+			bData = Enigma.criptografa(bData); //criptografa
+		
+		int idx = 0;
+		for (int i = indexByte; i < indexByte + bData.length; i++) {
+			bDados[i] = bData[idx];
+			idx++;
+		}
+
+		byte[] bGrava = new byte[21];
+		
+		bGrava[0] = (byte) 0xFF;
+		bGrava[1] = (byte) 0xD6;
+		bGrava[2] = (byte) 0x00;
+		bGrava[3] = (byte) bloco;
+		bGrava[4] = (byte) 0x10;
+
+		for (int i = 5; i < 21; i++) {
+			bGrava[i] = bDados[i-5];
 		}
 		
-		bGrava = new byte[]{(byte) 0xFF, (byte) 0xD6, (byte) 0x00, (byte) bloco, (byte) 0x10, //PARAMETROS
-				
-												bData[0],bData[1],bData[2],bData[3],bData[4], //VALOR
-												
-												(byte) 0xFF,(byte) 0xFF,(byte) 0xFF,		  //VAZIO
-												(byte) 0xFF,(byte) 0xFF,(byte) 0xFF,(byte) 0xFF,
-												(byte) 0xFF,(byte) 0xFF,(byte) 0xFF,(byte) 0xFF
-		};
+			retorno = send(bGrava,cch);
 		
-		retorno = sendDEC(bGrava,cch);
 		if (!retorno.equals("90 00 ")) {
 			System.out.println("Erro de gravação!");
 		}
@@ -142,8 +153,8 @@ public class OperacaoBasica {
 	       resinv = "";
 	       try {
 	           output = channel.transmit(bufCmd, bufResp);   
-	           baResp = Enigma.decriptografa(baResp);  //decriptografa
-	       } catch (CardException | IOException ex) {
+	           //baResp = Enigma.decriptografa(baResp);  //decriptografa
+	       } catch (CardException /*| IOException*/ ex) {
 	           ex.printStackTrace();
 	       }
 	       
@@ -192,7 +203,9 @@ public class OperacaoBasica {
    
    public boolean autentica(byte[] chave){
 	   byte[] bSobe;
-
+	   
+	   boolean sobchave = false;
+	   
 		bSobe = new byte[11];
 		bSobe[0] = (byte) 0xFF;
 		bSobe[1] = (byte) 0x82;
@@ -208,12 +221,21 @@ public class OperacaoBasica {
 		//TODO Fazer o teste se deu certo então continua
 		String resultado = send(bSobe,cch);
 		
-		
-		
 		if (resultado.equals("90 00 ") || resultado.equals("91 00 ")) 
-			return true;
+			sobchave = true;
 		else
-			return false;	   
+			sobchave = false;	
+		
+		if (sobchave) {
+			resultado = autenticaCartao(36);
+			if (resultado.equals("90 00 ") || resultado.equals("91 00 "))
+				return true;
+			else
+				return false;
+		}
+		else
+			return false;
+		
    }
    
 }
