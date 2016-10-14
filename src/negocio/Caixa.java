@@ -2,8 +2,6 @@ package negocio;
 
 import java.io.IOException;
 
-import javax.activity.InvalidActivityException;
-
 import cartao.OperacoesEspecificas;
 import dominio.Cartao;
 
@@ -34,7 +32,7 @@ public class Caixa {
 			testeAutenticado = opEsp.testeAutenticacaoInicializado();
 		
 		if (testeAutenticado) {
-			cartao.setId(opEsp.aguardaCartao());
+			cartao.setId(opEsp.getId());
 			retorno = "";
 		}
 		else {

@@ -98,4 +98,8 @@ public class OperacoesEspecificas {
 				};
 		opBas.gravaCartao(bloco,bData, 0, false); //mudar a função de gravar cartão para ser passado o index de inicio da gravação no bloco
 	}
+		
+	public long getId() {
+		return opBas.getId();
+	}	
 }

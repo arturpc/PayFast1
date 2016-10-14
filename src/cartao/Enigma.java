@@ -6,13 +6,13 @@ import java.nio.file.Paths;
 
 public class Enigma {
 	public static byte[] criptografa (byte[] bo) throws IOException{
-		 byte[] bd = new byte[bo.length];
-		 for (int i = 0; i < bd.length; i++) {
+		byte[] bd = new byte[bo.length];
+		for (int i = 0; i < bd.length; i++) {
 			bd[i] = (byte) (bo[i] - ((byte) 00000001));
 		}
 		return bd;
 	}
-	
+
 	public static byte[] decriptografa (byte[] bo) throws IOException{
 		 byte[] bd = new byte[bo.length];
 		 for (int i = 0; i < bd.length; i++) {
@@ -21,6 +21,7 @@ public class Enigma {
 		}
 		return bd;
 	}
+/*
 	public static void main(String[] args) throws IOException {
 		byte[] bchave = new byte[]{
 				(byte) 0xFA, (byte) 0x08, (byte) 0x11, (byte) 0x85, (byte) 0xCA, (byte) 0xB0 //CHAVE
@@ -33,5 +34,6 @@ public class Enigma {
        }
        System.out.println(resolvendoAMerdaQueEuFizBebao);		
 	}
+*/
 }
  
