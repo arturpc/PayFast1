@@ -26,7 +26,7 @@ public class Tela {
 	}
 	
 	//Monta a tela inicial, omenu do sistema.
-	public void telaMenu() throws IOException, InterruptedException{
+	public void telaMenu() throws IOException, InterruptedException {
 		new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
 		String tela = "\t\t\t\t\t" + TITULO + "\n\n\n";
 		tela += " 1 - Deposito\n";
@@ -45,7 +45,7 @@ public class Tela {
 			//-->senao terminar programa
 			System.exit(0);		
 	}
-	
+
 	//Monta a tela de deposito e apresenta ao usuario
 	public void telaDeposito() throws IOException, InterruptedException{
 		int valor = 0;

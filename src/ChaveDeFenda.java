@@ -25,7 +25,7 @@ public class ChaveDeFenda {
 		testeAutenticado = opBas.autentica(bchave);
 				
 		int bloco = 36;		
-		opBas.autenticaCartao(bloco);
+		opBas.autenticaCartao(bchave, bloco);
 		
 	    String hex = decToHex((int) 0);
 	    String temp;

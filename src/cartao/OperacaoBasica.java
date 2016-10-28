@@ -17,6 +17,7 @@ public class OperacaoBasica {
 	List<CardTerminal> ts;
 	Card c;
 	CardChannel cch;
+	String readerName;
 	
 	String resinv;
 	
@@ -40,7 +41,7 @@ public class OperacaoBasica {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		String readerName;
+		
 		for (int i = 0; i < ts.size(); i++) {
 			readerName = ts.get(i).toString();
 			if(readerName.equalsIgnoreCase("PC/SC terminal ACS ACR122 0")){
@@ -50,7 +51,6 @@ public class OperacaoBasica {
 				t = (CardTerminal) ts.get(1);
 			}
 		}
-		t = (CardTerminal) ts.get(1);
 	}
 
 	public long aguardaCartao() {
@@ -77,13 +77,16 @@ public class OperacaoBasica {
 		return getId();
 	}
 	
-	public String autenticaCartao(int bloco){
+	public String autenticaCartao(byte[] bchave, int bloco){
+		
 		//autentica o cartao conforme parametros
 		byte[] bAute;
 
 		bAute = new byte[]{(byte) 0xFF, (byte) 0x86, (byte) 0x00, (byte) 0x00, (byte) 0x05,
 						(byte) 0x01, (byte) 0x00, (byte) bloco, (byte) 0x60 /*A*/, (byte) 0x00
 		};
+		
+		autentica(bchave);
 		
 		retorno = send(bAute,cch);
 		if (!retorno.equals("90 00 ")) {
@@ -96,7 +99,8 @@ public class OperacaoBasica {
 		//le cartao conforme parametros
 		byte[] bLe;
 
-		bLe = new byte[]{(byte) 0xFF, (byte) 0xB0, (byte) 0x00, (byte) bloco, (byte) 0x00};
+		bLe = new byte[]{(byte) 0xFF, (byte) 0xB0, (byte) 0x00, (byte) bloco, (byte) 0x10};
+		//bLe = new byte[]{(byte) 0xFF, (byte) 0xB0, (byte) 0x00, (byte) bloco, (byte) 0x00}; //mudança feita para adaptação a leitora ACR
 		
 		//TODO Fazer o teste se deu certo então continua
 		retorno = sendDEC(bLe,cch);
@@ -219,7 +223,12 @@ public class OperacaoBasica {
 		bSobe = new byte[11];
 		bSobe[0] = (byte) 0xFF;
 		bSobe[1] = (byte) 0x82;
-		bSobe[2] = (byte) 0x20/*nao volatil*/;
+		
+		if (readerName.equalsIgnoreCase("PC/SC terminal Gemalto Prox-SU Contactless_12100143 0"))
+			bSobe[2] = (byte) 0x20/*nao volatil*/;
+		if (readerName.equalsIgnoreCase("PC/SC terminal ACS ACR122 0"))
+			bSobe[2] = (byte) 0x00/*volatil*/;			
+		
 		bSobe[3] = (byte) 0x00 /*chave A*/;
 		bSobe[4] = (byte) 0x06;		
 		int i = 5;
@@ -237,11 +246,11 @@ public class OperacaoBasica {
 			sobchave = false;	
 		
 		if (sobchave) {
-			resultado = autenticaCartao(36);
-			if (resultado.equals("90 00 ") || resultado.equals("91 00 "))
+			//resultado = autenticaCartao(36);
+			//if (resultado.equals("90 00 ") || resultado.equals("91 00 "))
 				return true;
-			else
-				return false;
+			//else
+				//return false;
 		}
 		else
 			return false;

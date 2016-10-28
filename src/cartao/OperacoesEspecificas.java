@@ -12,6 +12,8 @@ public class OperacoesEspecificas {
 	    '0', '1', '2', '3', '4', '5', '6', '7', 
 	    '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'
 	  };
+	  
+	byte[] bchave;
 	
 	OperacaoBasica opBas;
 	public OperacoesEspecificas() {
@@ -20,13 +22,12 @@ public class OperacoesEspecificas {
 	}
 	
 	public float leSaldo(){
-		//autentica no setor 10
-		int bloco = 36;
-		opBas.autenticaCartao(bloco);
+		//autentica no setor 10		
+		int bloco = 36;						
+		opBas.autenticaCartao(bchave, bloco);
 		//passa o endereco da leitura do saldo chamando a funcao basica de leitura
 		String r = opBas.leCartao(bloco);
 
-		
 		if(r.substring(0,15).replace(" ","").trim().equals("FFFFFFFFFF"))
 			return 0;		
 		else
@@ -37,7 +38,7 @@ public class OperacoesEspecificas {
 		//autentica setor
 		//autentica no setor 10
 		int bloco = 36;
-		opBas.autenticaCartao(bloco);
+		opBas.autenticaCartao(bchave, bloco);
 		//passa o endereco da gravaçao do saldo chamando a funcao basica de leitura
 		 double f = d;
 		 int i = (int) f;
@@ -70,14 +71,14 @@ public class OperacoesEspecificas {
 	}
 
 	public boolean testeAutenticacaoNaoInicializado() {
-		byte[] bchave = new byte[]{
+		bchave = new byte[]{
 				(byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF //CHAVE				
 				};  
 		return opBas.autentica(bchave);
 	}
 
 	public boolean testeAutenticacaoInicializado() {
-		byte[] bchave = new byte[]{
+		bchave = new byte[]{
 				(byte) 0xFA, (byte) 0x08, (byte) 0x11, (byte) 0x85, (byte) 0xCA, (byte) 0xB0 //CHAVE
 				}; 
 		return opBas.autentica(bchave);
@@ -86,7 +87,7 @@ public class OperacoesEspecificas {
 	public void inicializaCartao() throws IOException {
 		//troca chave de segurança
 		int bloco = 39;
-		opBas.autenticaCartao(bloco);
+		opBas.autenticaCartao(bchave, bloco);
 		//passa o endereco da gravaçao do saldo chamando a funcao basica de leitura
 		
 		gravaSaldo(0);
