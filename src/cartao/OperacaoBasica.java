@@ -163,8 +163,8 @@ public class OperacaoBasica {
 	       resinv = "";
 	       try {
 	           output = channel.transmit(bufCmd, bufResp);   
-	           //baResp = Enigma.decriptografa(baResp);  //decriptografa
-	       } catch (CardException /*| IOException*/ ex) {
+	           baResp = Enigma.decriptografa(baResp);  //decriptografa
+	       } catch (CardException | IOException ex) {
 	           ex.printStackTrace();
 	       }
 	       
