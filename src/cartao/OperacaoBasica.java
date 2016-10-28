@@ -40,6 +40,16 @@ public class OperacaoBasica {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		String readerName;
+		for (int i = 0; i < ts.size(); i++) {
+			readerName = ts.get(i).toString();
+			if(readerName.equalsIgnoreCase("PC/SC terminal ACS ACR122 0")){
+				t = (CardTerminal) ts.get(0);
+			}
+			if(readerName.equalsIgnoreCase("PC/SC terminal Gemalto Prox-SU Contactless_12100143 0")){
+				t = (CardTerminal) ts.get(1);
+			}
+		}
 		t = (CardTerminal) ts.get(1);
 	}
 
