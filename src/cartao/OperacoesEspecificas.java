@@ -54,6 +54,46 @@ public class OperacoesEspecificas {
 		opBas.gravaCartao(bloco,bData,0, true);
 	}
 
+	public void gravaIdNegocial(long d) throws IOException{
+		//autentica setor
+		//autentica no setor 10
+		int bloco = 37;
+		opBas.autenticaCartao(bchave, bloco);
+		//passa o endereco da gravaçao do id negocial chamando a funcao basica de leitura
+		 long f = d;
+		 int i = (int) f;
+	     int dec = i;
+	     String hex = decToHex(dec);
+	     String temp;
+	     byte[] bData = new byte[5];
+	     for(int j = 0; j < 5; j++){
+	    		temp = hex.substring(j*2, (j*2)+2);	    		
+	    		bData[j] = Integer.valueOf(temp, 16).byteValue();
+	     }
+	     
+		opBas.gravaCartao(bloco,bData,0, true);
+	}
+	
+	public void gravaTransacao(double d) throws IOException{
+		//autentica setor
+		//autentica no setor 10
+		int bloco = 38;
+		opBas.autenticaCartao(bchave, bloco);
+		//passa o endereco da gravaçao da transacao chamando a funcao basica de leitura
+		 double f = d;
+		 int i = (int) f;
+	     int dec = i;
+	     String hex = decToHex(dec);
+	     String temp;
+	     byte[] bData = new byte[5];
+	     for(int j = 0; j < 5; j++){
+	    		temp = hex.substring(j*2, (j*2)+2);	    		
+	    		bData[j] = Integer.valueOf(temp, 16).byteValue();
+	     }
+	     
+		opBas.gravaCartao(bloco,bData,0, true);
+	}
+
 	public long aguardaCartao() {
 		return opBas.aguardaCartao();
 	}	
@@ -84,20 +124,22 @@ public class OperacoesEspecificas {
 		return opBas.autentica(bchave);
 	}
 
-	public void inicializaCartao() throws IOException {
+	public void inicializaCartao(long idNegocial) throws IOException {
 		//troca chave de segurança
 		int bloco = 39;
 		opBas.autenticaCartao(bchave, bloco);
 		//passa o endereco da gravaçao do saldo chamando a funcao basica de leitura
-		
+
 		gravaSaldo(0);
+		gravaIdNegocial(idNegocial);
+		gravaTransacao(1);
 		
 		byte[] bData = new byte[]{
 				(byte) 0xFA, (byte) 0x08, (byte) 0x11, (byte) 0x85, (byte) 0xCA, (byte) 0xB0, //CHAVE
 				(byte) 0xFF, (byte) 0x07, (byte) 0x80, (byte) 0x69, //PADRÃO				
 				(byte) 0xFA, (byte) 0x08, (byte) 0x11, (byte) 0x85, (byte) 0xCA, (byte) 0xB0, //CHAVE
 				};
-		opBas.gravaCartao(bloco,bData, 0, false); //mudar a função de gravar cartão para ser passado o index de inicio da gravação no bloco
+		opBas.gravaCartao(bloco,bData, 0, false); 
 	}
 		
 	public long getId() {

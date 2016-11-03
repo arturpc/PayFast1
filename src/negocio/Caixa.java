@@ -76,7 +76,6 @@ public class Caixa {
 	}
 
 	public void inicializarCartao() throws IOException {
-		cartao.inicializaCartao(cartao.getId());
-		opEsp.inicializaCartao();
+		opEsp.inicializaCartao(cartao.inicializaCartao(cartao.getId()));
 	}
 }
