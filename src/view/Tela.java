@@ -3,7 +3,6 @@ package view;
 import java.io.IOException;
 import java.util.Scanner;
 
-import javax.activity.InvalidActivityException;
 
 import negocio.Caixa;
 
@@ -118,8 +117,6 @@ public class Tela {
 				telaCompra();
 			else if(opcao == 3)
 				telaInicializar();
-			else
-				throw new InvalidActivityException(); //opcao nao prevista
 		}
 		else {
 			System.out.println(retorno);
